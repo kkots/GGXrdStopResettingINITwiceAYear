@@ -32,7 +32,7 @@ chmod u+x GGXrdStopResettingINITwiceAYear_linux
 
 ## What was causing the bug
 
-Daylight saving. There is a bug in the MSVCR100.DLL that GuiltyGearXrd uses (you can find this DLL in its Binaries\Win32 folder), described here: <https://devblogs.microsoft.com/cppblog/c-runtime-crt-features-fixes-and-breaking-changes-in-visual-studio-14-ctp1/> (See `fstat and _utime`.) The exact function Unreal Engine 3 was using was MSVCR100.DLL::_wstat64i32, which is of the fstat family, so it had the bug. This bug is not present in the most up-to-date version of the MSVCR DLL (MSVCR140.DLL).
+Daylight saving. There is a bug in the MSVCR100.DLL that GuiltyGearXrd uses (you can find this DLL in its Binaries\Win32 folder), described here: <https://devblogs.microsoft.com/cppblog/c-runtime-crt-features-fixes-and-breaking-changes-in-visual-studio-14-ctp1/> (See `fstat and _utime`.) The exact function Unreal Engine 3 was using was MSVCR100.DLL::_wstat64i32, which is of the _stat family, so it had the bug. This bug is not present in the most up-to-date version of the MSVCR DLL (MSVCR140.DLL).
 
 The way I solved it is by calling KERNEL32.DLL::GetFileTime instead. It does not mess with timezones at all prior to returning the time, at least on Windows 10 and on Wine. God knows how it behaved on older versions of Windows. I am too lazy to test.
 
