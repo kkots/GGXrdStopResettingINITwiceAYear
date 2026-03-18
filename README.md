@@ -36,6 +36,8 @@ Daylight saving. There is a bug in the MSVCR100.DLL that GuiltyGearXrd uses (you
 
 The way I solved it is by calling KERNEL32.DLL::GetFileTime instead. It does not mess with timezones at all prior to returning the time, at least on Windows 10 and on Wine. God knows how it behaved on older versions of Windows. I am too lazy to test.
 
+Anyway, so Unreal Engine 3 reads the time, and then what? It compares the last-write time of the `GUILTY GEAR Xrd -REVELATOR-\Engine\Config\Base*.ini` and of the `GUILTY GEAR Xrd -REVELATOR-\REDGame\Config\Default*.ini` to the timestamps written in `GUILTY GEAR Xrd -REVELATOR-\REDGame\Config\RED*.ini` that are located in the `[IniVersion]` section. The `0` timestamp is for the Base, `1` is for Default. If there's only one timestamp in the RED ini, that means the Default ini had no `BasedOn` setting in its `[Configuration]` section, and that timestamps corresponds to the Default file. The timestamps are compared, and if they're different, it is assumed that is because either the Default, or Base, or both ini files have changed, and that triggers the update of the RED ini file from the Default and Base files (exact mechanics of how it combines the Default and Base aren't studied, but I think it reads Base first, then applies Default on top).
+
 ## Credits
 
 Thanks to Worse Than You for finding and posting the initial report of the bug and highlighting its relation to daylight saving, and later helping come up with the only correct solution to solving it.
